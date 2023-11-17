@@ -7,8 +7,9 @@
 #include "heap.h"
 
 // Estrutura para um ponto em D dimensões
-typedef struct {
-    float *coordinates;  // Coordenadas do ponto
+typedef struct
+{
+    float *coordinates; // Coordenadas do ponto
 } Point;
 
 // Função para gerar um conjunto de pontos aleatórios
@@ -43,7 +44,8 @@ float squaredDistance(const Point *p1, const Point *p2, int D)
 }
 
 // Função principal k-NN
-void knn(Point *Q, int nq, Point *P, int n, int D, int k, int **resultIndices) {
+void knn(Point *Q, int nq, Point *P, int n, int D, int k, int **resultIndices)
+{
     for (int i = 0; i < nq; i++)
     {
         // Heap para armazenar os k vizinhos mais próximos de Q[i]
@@ -143,7 +145,8 @@ void verificaSolucao(Point *Q, int nq, Point *P, int n, int D, int k, int **resu
     if (correto)
     {
         printf("CORRETO\n");
-    } else
+    }
+    else
     {
         printf("ERRADO\n");
     }
@@ -173,8 +176,9 @@ int main(int argc, char *argv[])
     geraConjuntoDeDados(P, npp, d);
 
     // Alocação de resultIndices
-    resultIndices = (int **)malloc(nq * sizeof(int*));
-    for (int i = 0; i < nq; i++) {
+    resultIndices = (int **)malloc(nq * sizeof(int *));
+    for (int i = 0; i < nq; i++)
+    {
         resultIndices[i] = (int *)malloc(k * sizeof(int));
     }
 
@@ -185,7 +189,8 @@ int main(int argc, char *argv[])
     // verificaSolucao(Q, nq, P, npp, d, k, resultIndices);
 
     // Liberação de memória
-    for (int i = 0; i < nq; i++) {
+    for (int i = 0; i < nq; i++)
+    {
         free(resultIndices[i]);
     }
     free(resultIndices);

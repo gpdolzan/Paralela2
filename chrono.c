@@ -10,12 +10,14 @@
 #include <stdio.h>
 #include <time.h>
 
-void chrono_reset(chronometer_t *chrono) {
+void chrono_reset(chronometer_t *chrono)
+{
     chrono->xtotal_ns = 0;
     chrono->xn_events = 0;
 }
 
-void chrono_start(chronometer_t *chrono) {
+void chrono_start(chronometer_t *chrono)
+{
     clock_gettime(CLOCK_MONOTONIC_RAW, &(chrono->xadd_time1));
 }
 
@@ -23,7 +25,8 @@ long long chrono_gettotal(chronometer_t *chrono) { return chrono->xtotal_ns; }
 
 long long chrono_getcount(chronometer_t *chrono) { return chrono->xn_events; }
 
-void chrono_stop(chronometer_t *chrono) {
+void chrono_stop(chronometer_t *chrono)
+{
     clock_gettime(CLOCK_MONOTONIC_RAW, &(chrono->xadd_time2));
 
     long long ns1 = chrono->xadd_time1.tv_sec * 1000 * 1000 * 1000 +
@@ -36,7 +39,8 @@ void chrono_stop(chronometer_t *chrono) {
     chrono->xn_events++;
 }
 
-void chrono_reportTime(chronometer_t *chrono, char *s) {
+void chrono_reportTime(chronometer_t *chrono, char *s)
+{
     printf(
         "\n%s deltaT(ns): %lld ns for %ld ops \n"
         "        ==> each op takes %lld ns\n",
@@ -44,7 +48,8 @@ void chrono_reportTime(chronometer_t *chrono, char *s) {
         chrono->xtotal_ns / chrono->xn_events);
 }
 
-void chrono_report_TimeInLoop(chronometer_t *chrono, char *s, int loop_count) {
+void chrono_report_TimeInLoop(chronometer_t *chrono, char *s, int loop_count)
+{
     printf(
         "\n%s deltaT(ns): %lld ns for %ld ops \n"
         "        ==> each op takes %lld ns\n",

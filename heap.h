@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct pair_t {
+typedef struct pair_t
+{
     float key;
     int val;
 } pair_t;
