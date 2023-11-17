@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
         double total_time_in_seconds = (double) chrono_gettotal(&chronometer) / 1000000000.0;
         double MOPs = (double)nq / total_time_in_seconds;
         printf("Tempo: %lf segundos\n", total_time_in_seconds);
-        printf("Throughput: %lf\n", MOPs);
+        printf("Throughput: %lf segundos\n", MOPs);
 
         verificaKNN(Q_flattened, nq, P, npp, d, k, gatheredResultIndices);
         free(gatheredResultIndices);
