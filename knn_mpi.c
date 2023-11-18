@@ -189,6 +189,8 @@ int main(int argc, char *argv[])
         resultIndices2D[i] = &localResultIndices[i * k];
     }
 
+    MPI_Barrier(MPI_COMM_WORLD);
+
     if (world_rank == 0)
     {
         chrono_reset(&chronometer);
@@ -213,6 +215,8 @@ int main(int argc, char *argv[])
     }
 
     MPI_Gatherv(localResultIndices, recvcounts[world_rank], MPI_INT, gatheredResultIndices, recvcounts, rdispls, MPI_INT, 0, MPI_COMM_WORLD);
+
+    MPI_Barrier(MPI_COMM_WORLD);
 
     if (world_rank == 0)
     {
