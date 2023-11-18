@@ -139,7 +139,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Initialize MPI
     MPI_Init(&argc, &argv);
     chronometer_t chronometer;
 
@@ -165,9 +164,23 @@ int main(int argc, char *argv[])
         resultIndices = (int *)malloc(nq * k * sizeof(int));
     }
 
-    int local_nq = nq / world_size;
+    // Compute the number of elements each process will handle
+    int *sendcounts = malloc(world_size * sizeof(int));
+    int *displs = malloc(world_size * sizeof(int));
+    int sum = 0;
+    for (int i = 0; i < world_size; i++) {
+        sendcounts[i] = (nq / world_size) * d;
+        if (i < nq % world_size) {
+            sendcounts[i] += d;
+        }
+        displs[i] = sum;
+        sum += sendcounts[i];
+    }
+
+    int local_nq = sendcounts[world_rank] / d;
     float *local_Q_flattened = (float *)malloc(local_nq * d * sizeof(float));
-    MPI_Scatter(Q_flattened, local_nq * d, MPI_FLOAT, local_Q_flattened, local_nq * d, MPI_FLOAT, 0, MPI_COMM_WORLD);
+
+    MPI_Scatterv(Q_flattened, sendcounts, displs, MPI_FLOAT, local_Q_flattened, sendcounts[world_rank], MPI_FLOAT, 0, MPI_COMM_WORLD);
 
     int *localResultIndices = (int *)malloc(local_nq * k * sizeof(int));
     int **resultIndices2D = (int **)malloc(local_nq * sizeof(int *));
@@ -184,16 +197,22 @@ int main(int argc, char *argv[])
 
     knn(local_Q_flattened, local_nq, P, npp, d, k, resultIndices2D);
 
+    int *recvcounts = malloc(world_size * sizeof(int));
+    int *rdispls = malloc(world_size * sizeof(int));
+    sum = 0;
+    for (int i = 0; i < world_size; i++) {
+        recvcounts[i] = sendcounts[i] / d * k;
+        rdispls[i] = sum;
+        sum += recvcounts[i];
+    }
+
     int *gatheredResultIndices = NULL;
     if (world_rank == 0)
     {
         gatheredResultIndices = (int *)malloc(nq * k * sizeof(int));
     }
 
-    MPI_Gather(localResultIndices, local_nq * k, MPI_INT, gatheredResultIndices, local_nq * k, MPI_INT, 0, MPI_COMM_WORLD);
-
-    // Barrier to guarantee knn processing is already over
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Gatherv(localResultIndices, recvcounts[world_rank], MPI_INT, gatheredResultIndices, recvcounts, rdispls, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (world_rank == 0)
     {
@@ -202,7 +221,7 @@ int main(int argc, char *argv[])
         double total_time_in_seconds = (double)chrono_gettotal(&chronometer) / 1000000000.0;
         double MOPs = (double)nq / total_time_in_seconds;
         printf("Tempo: %lf segundos\n", total_time_in_seconds);
-        printf("Throughput: %lf segundos\n", MOPs);
+        printf("Throughput: %lf MOPs/segundo\n", MOPs);
 
         verificaKNN(Q_flattened, nq, P, npp, d, k, gatheredResultIndices);
         free(gatheredResultIndices);
@@ -214,6 +233,10 @@ int main(int argc, char *argv[])
     free(localResultIndices);
     free(resultIndices2D);
     free(P);
+    free(sendcounts);
+    free(displs);
+    free(recvcounts);
+    free(rdispls);
 
     MPI_Finalize();
     return 0;
