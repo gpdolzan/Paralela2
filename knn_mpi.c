@@ -199,6 +199,11 @@ int main(int argc, char *argv[])
 
     knn(local_Q_flattened, local_nq, P, npp, d, k, resultIndices2D);
 
+    if (world_rank == 0)
+    {
+        chrono_stop(&chronometer);
+    }
+
     int *recvcounts = malloc(world_size * sizeof(int));
     int *rdispls = malloc(world_size * sizeof(int));
     sum = 0;
@@ -220,8 +225,6 @@ int main(int argc, char *argv[])
 
     if (world_rank == 0)
     {
-        chrono_stop(&chronometer);
-
         double total_time_in_seconds = (double)chrono_gettotal(&chronometer) / 1000000000.0;
         double MOPs = (double)nq / total_time_in_seconds;
         printf("Tempo: %lf segundos\n", total_time_in_seconds);
