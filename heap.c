@@ -1,3 +1,9 @@
+// GABRIEL PIMENTEL DOLZAN
+// GRR20209948
+//
+// TULIO DE PADUA DUTRA
+// GRR20206155
+
 #include "heap.h"
 
 void swap(pair_t *a, pair_t *b)

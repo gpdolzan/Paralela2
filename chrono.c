@@ -5,7 +5,6 @@
 // by W.Zola (2017)
 
 #include "chrono.h"
-
 #include <math.h>
 #include <stdio.h>
 #include <time.h>

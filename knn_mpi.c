@@ -1,3 +1,9 @@
+// GABRIEL PIMENTEL DOLZAN
+// GRR20209948
+//
+// TULIO DE PADUA DUTRA
+// GRR20206155
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
