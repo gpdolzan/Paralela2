@@ -174,9 +174,11 @@ int main(int argc, char *argv[])
     int *sendcounts = malloc(world_size * sizeof(int));
     int *displs = malloc(world_size * sizeof(int));
     int sum = 0;
-    for (int i = 0; i < world_size; i++) {
+    for (int i = 0; i < world_size; i++)
+    {
         sendcounts[i] = (nq / world_size) * d;
-        if (i < nq % world_size) {
+        if (i < nq % world_size)
+        {
             sendcounts[i] += d;
         }
         displs[i] = sum;
@@ -213,7 +215,8 @@ int main(int argc, char *argv[])
     int *recvcounts = malloc(world_size * sizeof(int));
     int *rdispls = malloc(world_size * sizeof(int));
     sum = 0;
-    for (int i = 0; i < world_size; i++) {
+    for (int i = 0; i < world_size; i++)
+    {
         recvcounts[i] = sendcounts[i] / d * k;
         rdispls[i] = sum;
         sum += recvcounts[i];
@@ -232,7 +235,7 @@ int main(int argc, char *argv[])
     if (world_rank == 0)
     {
         double total_time_in_seconds = (double)chrono_gettotal(&chronometer) / 1000000000.0;
-        double MOPs = (double)nq / total_time_in_seconds;
+        double MOPs = (double)npp / (total_time_in_seconds * 1000);
         printf("Tempo: %lf segundos\n", total_time_in_seconds);
         printf("Throughput: %lf MOPs/segundo\n", MOPs);
 
