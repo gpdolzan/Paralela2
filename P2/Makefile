@@ -1,5 +1,5 @@
 CC = mpicc
-CFLAGS = -Wall -g # gerar "warnings" detalhados e infos de depuração
+CFLAGS = -Wall -g -O3 # gerar "warnings" detalhados e infos de depuração
 
 # regra default (primeira regra)
 all: knn_mpi
