@@ -1,2 +1,2 @@
 #!/bin/bash
-mpirun -N 4 ./knn_mpi 128 400000 300 1024
+mpirun -N 2 ./knn_mpi 128 400000 300 1024
